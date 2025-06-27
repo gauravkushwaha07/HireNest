@@ -1,0 +1,239 @@
+<% layout('./layout') -%>
+
+<div class="container py-5">
+    <div class="row">
+        <div class="col-lg-8">
+            <div class="card border-0 shadow-sm mb-4">
+                <div class="card-body p-4">
+                    <div class="row">
+                        <div class="col-md-3 text-center">
+                            <img src="<%= worker.user.avatar %>" alt="<%= worker.user.name %>" 
+                                 class="rounded-circle mb-3" style="width: 120px; height: 120px; object-fit: cover;">
+                            <% if (worker.available) { %>
+                                <span class="badge bg-success mb-2">Available</span>
+                            <% } else { %>
+                                <span class="badge bg-secondary mb-2">Busy</span>
+                            <% } %>
+                            <div class="mt-2">
+                                <small class="text-muted d-block">Completed Projects</small>
+                                <strong class="text-primary"><%= worker.completedProjects %></strong>
+                            </div>
+                        </div>
+                        <div class="col-md-9">
+                            <h2 class="fw-bold mb-2"><%= worker.user.name %></h2>
+                            <h5 class="text-primary mb-3"><%= worker.category %></h5>
+                            
+                            <div class="d-flex align-items-center mb-3">
+                                <div class="me-4">
+                                    <% if (worker.rating > 0) { %>
+                                        <i class="bi bi-star-fill text-warning"></i>
+                                        <span class="fw-bold"><%= worker.rating.toFixed(1) %></span>
+                                        <small class="text-muted">(<%= worker.reviewCount %> reviews)</small>
+                                    <% } else { %>
+                                        <span class="text-muted">New worker - No reviews yet</span>
+                                    <% } %>
+                                </div>
+                                <div>
+                                    <strong class="text-primary fs-4">₹<%= worker.dailyRate %>/day</strong>
+                                </div>
+                            </div>
+                            
+                            <p class="text-muted mb-3"><%= worker.description %></p>
+                            
+                            <div class="mb-3">
+                                <h6 class="fw-bold mb-2">Skills & Expertise:</h6>
+                                <% worker.skills.forEach(skill => { %>
+                                    <span class="badge bg-primary me-1 mb-1"><%= skill %></span>
+                                <% }); %>
+                            </div>
+                            
+                            <div class="row">
+                                <div class="col-6">
+                                    <small class="text-muted d-block">Total Earnings</small>
+                                    <strong class="text-success">₹<%= worker.totalEarnings %></strong>
+                                </div>
+                                <div class="col-6">
+                                    <small class="text-muted d-block">Member Since</small>
+                                    <strong><%= new Date(worker.createdAt).toLocaleDateString() %></strong>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Reviews Section -->
+            <div class="card border-0 shadow-sm">
+                <div class="card-body p-4">
+                    <h5 class="fw-bold mb-4">
+                        <i class="bi bi-star me-2 text-warning"></i>Reviews & Ratings
+                    </h5>
+                    
+                    <% if (worker.reviewCount === 0) { %>
+                        <div class="text-center py-4">
+                            <i class="bi bi-chat-quote display-4 text-muted mb-3"></i>
+                            <h6 class="fw-bold">No reviews yet</h6>
+                            <p class="text-muted mb-0">Be the first to work with <%= worker.user.name %> and leave a review!</p>
+                        </div>
+                    <% } else { %>
+                        <!-- Sample reviews - In real app, these would come from database -->
+                        <div class="border-bottom pb-3 mb-3">
+                            <div class="d-flex align-items-center mb-2">
+                                <img src="https://images.pexels.com/photos/1239291/pexels-photo-1239291.jpeg?w=50" 
+                                     alt="Client" class="rounded-circle me-2" style="width: 40px; height: 40px; object-fit: cover;">
+                                <div>
+                                    <h6 class="fw-bold mb-0">John Smith</h6>
+                                    <div class="text-warning">
+                                        <i class="bi bi-star-fill"></i>
+                                        <i class="bi bi-star-fill"></i>
+                                        <i class="bi bi-star-fill"></i>
+                                        <i class="bi bi-star-fill"></i>
+                                        <i class="bi bi-star-fill"></i>
+                                    </div>
+                                </div>
+                            </div>
+                            <p class="text-muted mb-0">Excellent work quality and delivered on time. Highly recommended!</p>
+                            <small class="text-muted">2 weeks ago</small>
+                        </div>
+                        
+                        <div class="border-bottom pb-3 mb-3">
+                            <div class="d-flex align-items-center mb-2">
+                                <img src="https://images.pexels.com/photos/1181686/pexels-photo-1181686.jpeg?w=50" 
+                                     alt="Client" class="rounded-circle me-2" style="width: 40px; height: 40px; object-fit: cover;">
+                                <div>
+                                    <h6 class="fw-bold mb-0">Sarah Johnson</h6>
+                                    <div class="text-warning">
+                                        <i class="bi bi-star-fill"></i>
+                                        <i class="bi bi-star-fill"></i>
+                                        <i class="bi bi-star-fill"></i>
+                                        <i class="bi bi-star-fill"></i>
+                                        <i class="bi bi-star"></i>
+                                    </div>
+                                </div>
+                            </div>
+                            <p class="text-muted mb-0">Great communication and professional approach. Will hire again.</p>
+                            <small class="text-muted">1 month ago</small>
+                        </div>
+                    <% } %>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-lg-4">
+            <div class="card border-0 shadow-sm sticky-top" style="top: 2rem;">
+                <div class="card-body p-4">
+                    <h5 class="fw-bold mb-4">
+                        <i class="bi bi-calendar-check me-2 text-primary"></i>Book This Worker
+                    </h5>
+                    
+                    <% if (currentUser) { %>
+                        <% if (currentUser.userType === 'client') { %>
+                            <% if (worker.available) { %>
+                                <form action="/bookings/create" method="POST">
+                                    <input type="hidden" name="workerId" value="<%= worker._id %>">
+                                    
+                                    <div class="mb-3">
+                                        <label for="startDate" class="form-label">Start Date</label>
+                                        <input type="date" class="form-control" id="startDate" name="startDate" required>
+                                    </div>
+                                    
+                                    <div class="mb-3">
+                                        <label for="endDate" class="form-label">End Date</label>
+                                        <input type="date" class="form-control" id="endDate" name="endDate" required>
+                                    </div>
+                                    
+                                    <div class="mb-3">
+                                        <label for="message" class="form-label">Project Description</label>
+                                        <textarea class="form-control" id="message" name="message" rows="3" 
+                                                  placeholder="Describe your project requirements..."></textarea>
+                                    </div>
+                                    
+                                    <div class="mb-3">
+                                        <div class="bg-light p-3 rounded">
+                                            <div class="d-flex justify-content-between">
+                                                <span>Daily Rate:</span>
+                                                <strong class="text-primary">₹<%= worker.dailyRate %></strong>
+                                            </div>
+                                            <div class="d-flex justify-content-between">
+                                                <span>Days:</span>
+                                                <strong id="totalDays">1</strong>
+                                            </div>
+                                            <hr class="my-2">
+                                            <div class="d-flex justify-content-between">
+                                                <span class="fw-bold">Total Cost:</span>
+                                                <strong class="text-primary fs-5" id="totalCost">₹<%= worker.dailyRate %></strong>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <button type="submit" class="btn btn-primary w-100">
+                                        <i class="bi bi-send me-2"></i>Send Booking Request
+                                    </button>
+                                </form>
+                            <% } else { %>
+                                <div class="text-center py-4">
+                                    <i class="bi bi-calendar-x display-4 text-muted mb-3"></i>
+                                    <h6 class="fw-bold">Currently Unavailable</h6>
+                                    <p class="text-muted mb-0">This worker is not available for new bookings at the moment.</p>
+                                </div>
+                            <% } %>
+                        <% } else { %>
+                            <div class="text-center py-4">
+                                <i class="bi bi-info-circle display-4 text-muted mb-3"></i>
+                                <h6 class="fw-bold">Worker Account</h6>
+                                <p class="text-muted mb-0">You need a client account to book workers.</p>
+                            </div>
+                        <% } %>
+                    <% } else { %>
+                        <div class="text-center py-4">
+                            <i class="bi bi-person-plus display-4 text-muted mb-3"></i>
+                            <h6 class="fw-bold">Login Required</h6>
+                            <p class="text-muted mb-3">Please login to book this worker.</p>
+                            <a href="/auth/login" class="btn btn-primary w-100">
+                                <i class="bi bi-box-arrow-in-right me-2"></i>Login
+                            </a>
+                        </div>
+                    <% } %>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+// Calculate total cost based on date selection
+document.addEventListener('DOMContentLoaded', function() {
+    const startDate = document.getElementById('startDate');
+    const endDate = document.getElementById('endDate');
+    const totalDays = document.getElementById('totalDays');
+    const totalCost = document.getElementById('totalCost');
+    const dailyRate = <%= worker.dailyRate %>;
+    
+    // Set minimum date to today
+    const today = new Date().toISOString().split('T')[0];
+    if (startDate) startDate.min = today;
+    if (endDate) endDate.min = today;
+    
+    function calculateTotal() {
+        if (startDate && endDate && startDate.value && endDate.value) {
+            const start = new Date(startDate.value);
+            const end = new Date(endDate.value);
+            const diffTime = Math.abs(end - start);
+            const days = Math.ceil(diffTime / (1000 * 60 * 60 * 24)) + 1;
+            
+            if (days > 0) {
+                totalDays.textContent = days;
+                totalCost.textContent = '₹' + (days * dailyRate);
+            }
+        }
+    }
+    
+    if (startDate && endDate) {
+        startDate.addEventListener('change', function() {
+            endDate.min = this.value;
+            calculateTotal();
+        });
+        endDate.addEventListener('change', calculateTotal);
+    }
+});
+</script>

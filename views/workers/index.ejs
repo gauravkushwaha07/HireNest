@@ -1,0 +1,129 @@
+<% layout('./layout') -%>
+
+<div class="container py-5">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h1 class="fw-bold mb-2 text-gradient">Browse Workers</h1>
+            <p class="text-muted mb-0">Found <%= workers.length %> talented professionals</p>
+        </div>
+    </div>
+    
+    <!-- Filters -->
+    <div class="card border-0 shadow-sm mb-4">
+        <div class="card-body">
+            <form class="row g-3" method="GET">
+                <div class="col-md-3">
+                    <label for="category" class="form-label">Category</label>
+                    <select class="form-select" id="category" name="category">
+                        <option value="">All Categories</option>
+                        <option value="Web Development" <%= filters.category === 'Web Development' ? 'selected' : '' %>>Web Development</option>
+                        <option value="Mobile Development" <%= filters.category === 'Mobile Development' ? 'selected' : '' %>>Mobile Development</option>
+                        <option value="Graphic Design" <%= filters.category === 'Graphic Design' ? 'selected' : '' %>>Graphic Design</option>
+                        <option value="UI/UX Design" <%= filters.category === 'UI/UX Design' ? 'selected' : '' %>>UI/UX Design</option>
+                        <option value="Content Writing" <%= filters.category === 'Content Writing' ? 'selected' : '' %>>Content Writing</option>
+                        <option value="Digital Marketing" <%= filters.category === 'Digital Marketing' ? 'selected' : '' %>>Digital Marketing</option>
+                        <option value="Data Entry" <%= filters.category === 'Data Entry' ? 'selected' : '' %>>Data Entry</option>
+                        <option value="Translation" <%= filters.category === 'Translation' ? 'selected' : '' %>>Translation</option>
+                        <option value="Video Editing" <%= filters.category === 'Video Editing' ? 'selected' : '' %>>Video Editing</option>
+                        <option value="Photography" <%= filters.category === 'Photography' ? 'selected' : '' %>>Photography</option>
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <label for="availability" class="form-label">Availability</label>
+                    <select class="form-select" id="availability" name="availability">
+                        <option value="">All Workers</option>
+                        <option value="available" <%= filters.availability === 'available' ? 'selected' : '' %>>Available Now</option>
+                    </select>
+                </div>
+                <div class="col-md-4">
+                    <label for="search" class="form-label">Search Skills</label>
+                    <input type="text" class="form-control" id="search" name="search" 
+                           placeholder="e.g., JavaScript, React, Design..." 
+                           value="<%= filters.search || '' %>">
+                </div>
+                <div class="col-md-2">
+                    <label class="form-label">&nbsp;</label>
+                    <button type="submit" class="btn btn-primary d-block w-100">
+                        <i class="bi bi-funnel me-2"></i>Filter
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+    
+    <!-- Workers Grid -->
+    <div class="row g-4">
+        <% if (workers.length === 0) { %>
+            <div class="col-12">
+                <div class="text-center py-5">
+                    <i class="bi bi-search display-1 text-muted mb-3"></i>
+                    <h4 class="fw-bold">No workers found</h4>
+                    <p class="text-muted">Try adjusting your filters to see more results.</p>
+                    <a href="/workers" class="btn btn-primary">Clear Filters</a>
+                </div>
+            </div>
+        <% } else { %>
+            <% workers.forEach(worker => { %>
+                <div class="col-md-6 col-lg-4">
+                    <div class="card h-100 border-0 shadow-sm worker-card" 
+                         data-category="<%= worker.category.toLowerCase() %>" 
+                         data-available="<%= worker.available %>">
+                        <div class="card-body p-4">
+                            <div class="d-flex align-items-center mb-3">
+                                <img src="<%= worker.user.avatar %>" alt="<%= worker.user.name %>" 
+                                     class="rounded-circle me-3" style="width: 60px; height: 60px; object-fit: cover;">
+                                <div>
+                                    <h6 class="fw-bold mb-1 worker-name"><%= worker.user.name %></h6>
+                                    <small class="text-muted worker-category"><%= worker.category %></small>
+                                </div>
+                            </div>
+                            
+                            <p class="text-muted mb-3"><%= worker.description.substring(0, 100) %>...</p>
+                            
+                            <div class="mb-3 worker-skills">
+                                <% worker.skills.slice(0, 3).forEach(skill => { %>
+                                    <span class="badge bg-light text-dark me-1 mb-1"><%= skill %></span>
+                                <% }); %>
+                                <% if (worker.skills.length > 3) { %>
+                                    <span class="badge bg-light text-dark">+<%= worker.skills.length - 3 %> more</span>
+                                <% } %>
+                            </div>
+                            
+                            <div class="d-flex justify-content-between align-items-center mb-3">
+                                <div>
+                                    <% if (worker.rating > 0) { %>
+                                        <i class="bi bi-star-fill text-warning"></i>
+                                        <span class="fw-bold"><%= worker.rating.toFixed(1) %></span>
+                                        <small class="text-muted">(<%= worker.reviewCount %> reviews)</small>
+                                    <% } else { %>
+                                        <small class="text-muted">New worker</small>
+                                    <% } %>
+                                </div>
+                                <% if (worker.available) { %>
+                                    <span class="badge bg-success">Available</span>
+                                <% } else { %>
+                                    <span class="badge bg-secondary">Busy</span>
+                                <% } %>
+                            </div>
+                            
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <strong class="text-primary fs-5">₹<%= worker.dailyRate %>/day</strong>
+                                </div>
+                                <a href="/workers/<%= worker._id %>" class="btn btn-primary btn-sm">
+                                    <i class="bi bi-eye me-1"></i>View Profile
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            <% }); %>
+        <% } %>
+    </div>
+    
+    <% if (workers.length > 0) { %>
+        <div class="text-center mt-5">
+            <p class="text-muted">Showing <%= workers.length %> workers</p>
+        </div>
+    <% } %>
+</div>

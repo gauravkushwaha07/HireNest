@@ -1,0 +1,126 @@
+<% layout('layout') -%>
+<div class="container py-5">
+    <div class="text-center mb-5">
+        <h1 class="display-4 fw-bold mb-4">Get Hired on Hire Nest</h1>
+        <p class="lead text-muted">Join our community of skilled professionals and start earning</p>
+    </div>
+    
+    <div class="row">
+        <div class="col-lg-8 mx-auto">
+            <div class="row mb-5">
+                <div class="col-md-6">
+                    <img src="https://images.pexels.com/photos/3184338/pexels-photo-3184338.jpeg?w=600" 
+                         alt="Freelancer working" class="img-fluid rounded shadow">
+                </div>
+                <div class="col-md-6">
+                    <h3 class="fw-bold mb-4">Why Work with Us?</h3>
+                    <ul class="list-unstyled">
+                        <li class="mb-3">
+                            <i class="bi bi-check-circle text-success me-2"></i>
+                            <strong>Flexible Schedule:</strong> Work when you want, where you want
+                        </li>
+                        <li class="mb-3">
+                            <i class="bi bi-check-circle text-success me-2"></i>
+                            <strong>Fair Pricing:</strong> Set your own daily rates
+                        </li>
+                        <li class="mb-3">
+                            <i class="bi bi-check-circle text-success me-2"></i>
+                            <strong>Secure Payments:</strong> Get paid safely and on time
+                        </li>
+                        <li class="mb-3">
+                            <i class="bi bi-check-circle text-success me-2"></i>
+                            <strong>Global Reach:</strong> Work with clients worldwide
+                        </li>
+                        <li class="mb-3">
+                            <i class="bi bi-check-circle text-success me-2"></i>
+                            <strong>Build Reputation:</strong> Grow through ratings and reviews
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="row g-4 mb-5">
+                <div class="col-md-4 text-center">
+                    <div class="bg-primary bg-opacity-10 rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style="width: 80px; height: 80px;">
+                        <i class="bi bi-person-plus text-primary fs-2"></i>
+                    </div>
+                    <h5 class="fw-bold">1. Create Profile</h5>
+                    <p class="text-muted">Sign up and create your professional profile with skills and experience.</p>
+                </div>
+                <div class="col-md-4 text-center">
+                    <div class="bg-success bg-opacity-10 rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style="width: 80px; height: 80px;">
+                        <i class="bi bi-search text-success fs-2"></i>
+                    </div>
+                    <h5 class="fw-bold">2. Get Discovered</h5>
+                    <p class="text-muted">Clients will find you based on your skills and availability.</p>
+                </div>
+                <div class="col-md-4 text-center">
+                    <div class="bg-warning bg-opacity-10 rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style="width: 80px; height: 80px;">
+                        <i class="bi bi-cash-coin text-warning fs-2"></i>
+                    </div>
+                    <h5 class="fw-bold">3. Start Earning</h5>
+                    <p class="text-muted">Accept bookings and start working on exciting projects.</p>
+                </div>
+            </div>
+            
+            <div class="card border-0 shadow">
+                <div class="card-body p-5">
+                    <h4 class="fw-bold text-center mb-4">Popular Categories</h4>
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <div class="d-flex align-items-center p-3 border rounded">
+                                <i class="bi bi-code-slash text-primary fs-4 me-3"></i>
+                                <div>
+                                    <h6 class="fw-bold mb-1">Web Development</h6>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="d-flex align-items-center p-3 border rounded">
+                                <i class="bi bi-palette text-success fs-4 me-3"></i>
+                                <div>
+                                    <h6 class="fw-bold mb-1">Graphic Design</h6>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="d-flex align-items-center p-3 border rounded">
+                                <i class="bi bi-pencil-square text-warning fs-4 me-3"></i>
+                                <div>
+                                    <h6 class="fw-bold mb-1">Content Writing</h6>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="d-flex align-items-center p-3 border rounded">
+                                <i class="bi bi-megaphone text-danger fs-4 me-3"></i>
+                                <div>
+                                    <h6 class="fw-bold mb-1">Digital Marketing</h6>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="text-center mt-5">
+                <% if (currentUser) { %>
+                    <% if (currentUser.userType === 'worker') { %>
+                        <a href="/dashboard/profile" class="btn btn-primary btn-lg">
+                            <i class="bi bi-person-gear me-2"></i>Manage Your Profile
+                        </a>
+                    <% } else { %>
+                        <p class="text-muted mb-3">You're registered as a client. To become a worker, please create a new account.</p>
+                        <a href="/auth/logout" class="btn btn-outline-primary me-2">Logout</a>
+                        <a href="/auth/register" class="btn btn-primary">Register as Worker</a>
+                    <% } %>
+                <% } else { %>
+                    <a href="/auth/register" class="btn btn-primary btn-lg">
+                        <i class="bi bi-person-plus me-2"></i>Join as a Worker
+                    </a>
+                    <p class="text-muted mt-3">Already have an account? <a href="/auth/login">Login here</a></p>
+                <% } %>
+            </div>
+        </div>
+    </div>
+</div>

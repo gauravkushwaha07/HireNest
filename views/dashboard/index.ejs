@@ -1,0 +1,226 @@
+<% layout('./layout') -%>
+
+<div class="container py-5">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h1 class="fw-bold mb-2 text-gradient">Dashboard</h1>
+            <p class="text-muted mb-0">Welcome back, <%= currentUser.name %>!</p>
+        </div>
+
+    </div>
+    
+    <!-- Stats Cards -->
+    <div class="row g-4 mb-5">
+        <div class="col-md-3">
+            <div class="card border-0 shadow-sm stats-card">
+                <div class="card-body p-4 text-center">
+                    <div class="stats-icon bg-primary bg-opacity-10 mb-3">
+                        <i class="bi bi-calendar-check text-primary"></i>
+                    </div>
+                    <h5 class="fw-bold mb-1"><%= stats.totalBookings || 0 %></h5>
+                    <p class="text-muted mb-0">Total Bookings</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-3">
+            <div class="card border-0 shadow-sm stats-card">
+                <div class="card-body p-4 text-center">
+                    <div class="stats-icon bg-success bg-opacity-10 mb-3">
+                        <i class="bi bi-check-circle text-success"></i>
+                    </div>
+                    <h5 class="fw-bold mb-1"><%= stats.acceptedBookings || 0 %></h5>
+                    <p class="text-muted mb-0">Accepted</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-3">
+            <div class="card border-0 shadow-sm stats-card">
+                <div class="card-body p-4 text-center">
+                    <div class="stats-icon bg-warning bg-opacity-10 mb-3">
+                        <i class="bi bi-clock text-warning"></i>
+                    </div>
+                    <h5 class="fw-bold mb-1"><%= stats.pendingBookings || 0 %></h5>
+                    <p class="text-muted mb-0">Pending</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-3">
+            <div class="card border-0 shadow-sm stats-card">
+                <div class="card-body p-4 text-center">
+                    <div class="stats-icon bg-info bg-opacity-10 mb-3">
+                        <i class="bi bi-currency-rupee text-info"></i>
+                    </div>
+                    <h5 class="fw-bold mb-1">₹<%= (currentUser.userType === 'client' ? stats.totalSpent : stats.totalEarnings) || 0 %></h5>
+                    <p class="text-muted mb-0"><%= currentUser.userType === 'client' ? 'Total Spent' : 'Total Earnings' %></p>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Worker Profile Status (for workers only) -->
+    <% if (currentUser.userType === 'worker') { %>
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="card border-0 shadow-sm">
+                    <div class="card-body p-4">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <h5 class="fw-bold mb-2">Worker Profile</h5>
+                                <% if (workerProfile) { %>
+                                    <p class="text-muted mb-0">
+                                        Status: 
+                                        <% if (workerProfile.available) { %>
+                                            <span class="badge bg-success">Available</span>
+                                        <% } else { %>
+                                            <span class="badge bg-secondary">Busy</span>
+                                        <% } %>
+                                        | Daily Rate: <strong class="text-primary">₹<%= workerProfile.dailyRate %></strong>
+                                        | Rating: <strong><%= workerProfile.rating.toFixed(1) %>/5</strong>
+                                    </p>
+                                <% } else { %>
+                                    <p class="text-warning mb-0">Your worker profile is incomplete. Complete it to start receiving bookings.</p>
+                                <% } %>
+                            </div>
+                            <a href="/dashboard/profile" class="btn btn-outline-primary">
+                                <% if (workerProfile) { %>
+                                    <i class="bi bi-pencil me-2"></i>Edit Profile
+                                <% } else { %>
+                                    <i class="bi bi-plus-circle me-2"></i>Complete Profile
+                                <% } %>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    <% } %>
+    
+    <!-- Bookings Table -->
+    <div class="row">
+        <div class="col-12">
+            <div class="card border-0 shadow-sm">
+                <div class="card-header bg-white border-0 py-3">
+                    <h5 class="fw-bold mb-0">
+                        <% if (currentUser.userType === 'client') { %>
+                            <i class="bi bi-calendar-event me-2 text-primary"></i>My Bookings
+                        <% } else { %>
+                            <i class="bi bi-inbox me-2 text-primary"></i>Booking Requests
+                        <% } %>
+                    </h5>
+                </div>
+                <div class="card-body p-0">
+                    <% if (bookings.length === 0) { %>
+                        <div class="text-center py-5">
+                            <i class="bi bi-calendar-x display-4 text-muted mb-3"></i>
+                            <h5 class="fw-bold">No bookings yet</h5>
+                            <p class="text-muted mb-3">
+                                <% if (currentUser.userType === 'client') { %>
+                                    Start by browsing and booking skilled workers for your projects.
+                                <% } else { %>
+                                    Complete your profile to start receiving booking requests.
+                                <% } %>
+                            </p>
+                            <% if (currentUser.userType === 'client') { %>
+                                <a href="/workers" class="btn btn-primary">
+                                    <i class="bi bi-search me-2"></i>Browse Workers
+                                </a>
+                            <% } else { %>
+                                <a href="/dashboard/profile" class="btn btn-primary">
+                                    <i class="bi bi-person-gear me-2"></i>Complete Profile
+                                </a>
+                            <% } %>
+                        </div>
+                    <% } else { %>
+                        <div class="table-responsive">
+                            <table class="table table-hover mb-0">
+                                <thead class="table-light">
+                                    <tr>
+                                        <% if (currentUser.userType === 'client') { %>
+                                            <th>Worker</th>
+                                        <% } else { %>
+                                            <th>Client</th>
+                                        <% } %>
+                                        <th>Dates</th>
+                                        <th>Duration</th>
+                                        <th>Total Cost</th>
+                                        <th>Status</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <% bookings.forEach(booking => { %>
+                                        <tr>
+                                            <td>
+                                                <% if (currentUser.userType === 'client' && booking.worker && booking.worker.user) { %>
+                                                    <div class="d-flex align-items-center">
+                                                        <img src="<%= booking.worker.user.avatar %>" alt="<%= booking.worker.user.name %>" 
+                                                             class="rounded-circle me-2" style="width: 32px; height: 32px; object-fit: cover;">
+                                                        <div>
+                                                            <div class="fw-bold"><%= booking.worker.user.name %></div>
+                                                            <small class="text-muted"><%= booking.worker.category %></small>
+                                                        </div>
+                                                    </div>
+                                                <% } else if (currentUser.userType === 'worker' && booking.client) { %>
+                                                    <div class="d-flex align-items-center">
+                                                        <img src="<%= booking.client.avatar %>" alt="<%= booking.client.name %>" 
+                                                             class="rounded-circle me-2" style="width: 32px; height: 32px; object-fit: cover;">
+                                                        <div>
+                                                            <div class="fw-bold"><%= booking.client.name %></div>
+                                                            <small class="text-muted"><%= booking.client.email %></small>
+                                                        </div>
+                                                    </div>
+                                                <% } %>
+                                            </td>
+                                            <td>
+                                                <div class="small">
+                                                    <%= new Date(booking.startDate).toLocaleDateString() %> - 
+                                                    <%= new Date(booking.endDate).toLocaleDateString() %>
+                                                </div>
+                                            </td>
+                                            <td><%= booking.days %> day<%= booking.days > 1 ? 's' : '' %></td>
+                                            <td><strong class="text-primary">₹<%= booking.totalCost %></strong></td>
+                                            <td>
+                                                <% if (booking.status === 'pending') { %>
+                                                    <span class="badge bg-warning">Pending</span>
+                                                <% } else if (booking.status === 'accepted') { %>
+                                                    <span class="badge bg-success">Accepted</span>
+                                                <% } else if (booking.status === 'rejected') { %>
+                                                    <span class="badge bg-danger">Rejected</span>
+                                                <% } else if (booking.status === 'completed') { %>
+                                                    <span class="badge bg-info">Completed</span>
+                                                <% } %>
+                                            </td>
+                                            <td>
+                                                <% if (currentUser.userType === 'worker' && booking.status === 'pending') { %>
+                                                    <div class="btn-group btn-group-sm">
+                                                        <form action="/bookings/<%= booking._id %>/update-status" method="POST" class="d-inline">
+                                                            <input type="hidden" name="status" value="accepted">
+                                                            <button type="submit" class="btn btn-outline-success btn-sm">
+                                                                <i class="bi bi-check me-1"></i>Accept
+                                                            </button>
+                                                        </form>
+                                                        <form action="/bookings/<%= booking._id %>/update-status" method="POST" class="d-inline">
+                                                            <input type="hidden" name="status" value="rejected">
+                                                            <button type="submit" class="btn btn-outline-danger btn-sm">
+                                                                <i class="bi bi-x me-1"></i>Reject
+                                                            </button>
+                                                        </form>
+                                                    </div>
+                                                <% } else { %>
+                                                    <span class="text-muted small">-</span>
+                                                <% } %>
+                                            </td>
+                                        </tr>
+                                    <% }); %>
+                                </tbody>
+                            </table>
+                        </div>
+                    <% } %>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

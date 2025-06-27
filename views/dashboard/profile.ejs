@@ -1,0 +1,114 @@
+<% layout('./layout') -%>
+
+<div class="container py-5">
+    <div class="row">
+        <div class="col-lg-8 mx-auto">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <div>
+                    <h1 class="fw-bold mb-2">Worker Profile</h1>
+                    <p class="text-muted mb-0">Complete your profile to start receiving bookings</p>
+                </div>
+                <a href="/dashboard" class="btn btn-outline-primary">
+                    <i class="bi bi-arrow-left me-2"></i>Back to Dashboard
+                </a>
+            </div>
+            
+            <div class="card border-0 shadow">
+                <div class="card-body p-5">
+                    <form action="/dashboard/profile" method="POST">
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="category" class="form-label">Category</label>
+                                <select class="form-select" id="category" name="category" required>
+                                    <option value="">Select Category</option>
+                                    <option value="Web Development" <%= workerProfile && workerProfile.category === 'Web Development' ? 'selected' : '' %>>Web Development</option>
+                                    <option value="Graphic Design" <%= workerProfile && workerProfile.category === 'Graphic Design' ? 'selected' : '' %>>Graphic Design</option>
+                                    <option value="Content Writing" <%= workerProfile && workerProfile.category === 'Content Writing' ? 'selected' : '' %>>Content Writing</option>
+                                    <option value="Digital Marketing" <%= workerProfile && workerProfile.category === 'Digital Marketing' ? 'selected' : '' %>>Digital Marketing</option>
+                                    <option value="Data Entry" <%= workerProfile && workerProfile.category === 'Data Entry' ? 'selected' : '' %>>Data Entry</option>
+                                    <option value="Translation" <%= workerProfile && workerProfile.category === 'Translation' ? 'selected' : '' %>>Translation</option>
+                                    <option value="Video Editing" <%= workerProfile && workerProfile.category === 'Video Editing' ? 'selected' : '' %>>Video Editing</option>
+                                    <option value="Other" <%= workerProfile && workerProfile.category === 'Other' ? 'selected' : '' %>>Other</option>
+                                </select>
+                            </div>
+                            
+                            <div class="col-md-6 mb-3">
+                                <label for="dailyRate" class="form-label">Daily Rate (₹)</label>
+                                <input type="number" class="form-control" id="dailyRate" name="dailyRate" 
+                                       min="1" step="1" required
+                                       value="<%= workerProfile ? workerProfile.dailyRate : '' %>">
+                            </div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="skills" class="form-label">Skills (comma-separated)</label>
+                            <input type="text" class="form-control" id="skills" name="skills" 
+                                   placeholder="e.g., JavaScript, React, Node.js" required
+                                   value="<%= workerProfile ? workerProfile.skills.join(', ') : '' %>">
+                            <div class="form-text">Enter your skills separated by commas</div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="description" class="form-label">Professional Description</label>
+                            <textarea class="form-control" id="description" name="description" rows="4" required
+                                      placeholder="Describe your experience, expertise, and what makes you unique..."><%= workerProfile ? workerProfile.description : '' %></textarea>
+                        </div>
+                        
+                        <div class="mb-4">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="available" name="available"
+                                       <%= workerProfile && workerProfile.available ? 'checked' : '' %>>
+                                <label class="form-check-label" for="available">
+                                    I am currently available for new bookings
+                                </label>
+                            </div>
+                        </div>
+                        
+                        <div class="d-flex gap-3">
+                            <button type="submit" class="btn btn-primary">
+                                <i class="bi bi-check-circle me-2"></i>
+                                <% if (workerProfile) { %>
+                                    Update Profile
+                                <% } else { %>
+                                    Create Profile
+                                <% } %>
+                            </button>
+                            <a href="/dashboard" class="btn btn-outline-secondary">Cancel</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            
+            <% if (workerProfile) { %>
+                <div class="card border-0 shadow-sm mt-4">
+                    <div class="card-body p-4">
+                        <h5 class="fw-bold mb-3">Profile Preview</h5>
+                        <div class="row">
+                            <div class="col-md-8">
+                                <h6 class="fw-bold"><%= currentUser.name %></h6>
+                                <p class="text-primary mb-2"><%= workerProfile.category %></p>
+                                <p class="text-muted mb-3"><%= workerProfile.description %></p>
+                                <div class="mb-2">
+                                    <% workerProfile.skills.forEach(skill => { %>
+                                        <span class="badge bg-primary me-1"><%= skill %></span>
+                                    <% }); %>
+                                </div>
+                            </div>
+                            <div class="col-md-4 text-end">
+                                <% if (workerProfile.available) { %>
+                                    <span class="badge bg-success mb-2">Available</span>
+                                <% } else { %>
+                                    <span class="badge bg-secondary mb-2">Busy</span>
+                                <% } %>
+                                <div class="fs-5 fw-bold text-primary">$<%= workerProfile.dailyRate %>/day</div>
+                                <a href="/workers/<%= workerProfile.id %>" class="btn btn-outline-primary btn-sm mt-2">
+                                    View Public Profile
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            <% } %>
+        </div>
+    </div>
+</div>
