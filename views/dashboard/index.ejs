@@ -209,6 +209,16 @@
                                                             </button>
                                                         </form>
                                                     </div>
+                                                <% } else if(currentUser.userType === 'worker' && booking.status === 'accepted') { %>
+                                                    <div class="btn-group btn-group-sm">
+                                                        <form action="/bookings/<%= booking._id %>/update-status" method="POST" class="d-inline">
+                                                            <input type="hidden" name="status" value="completed">
+                                                            <button type="submit" class="btn btn-outline-success btn-sm">
+                                                                <i class="bi bi-check me-1"></i>Completed
+                                                            </button>
+                                                        </form>
+                                                    </div>
+                                                    
                                                 <% } else { %>
                                                     <span class="text-muted small">-</span>
                                                 <% } %>
