@@ -6,8 +6,7 @@
   "private": true,
   "scripts": {
     "start": "node app.js",
-    "dev": "nodemon app.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "dev": "nodemon app.js"
   },
   "dependencies": {
     "bcryptjs": "^2.4.3",
@@ -25,13 +24,6 @@
   "devDependencies": {
     "nodemon": "^3.0.2"
   },
-  "keywords": [
-    "worker",
-    "booking",
-    "freelancer",
-    "hire",
-    "mongodb"
-  ],
-  "author": "Hire Nest",
-  "license": "MIT"
+  "author": "Gaurav Kumar",
+  "license": ""
 }

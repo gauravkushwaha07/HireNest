@@ -33,7 +33,7 @@ app.use(methodOverride('_method'));
 
 // Session configuration with MongoDB store
 app.use(session({
-    secret: 'hire-nest-secret-key-2024-mongodb',
+    secret: process.env.MONGO_SECRET,
     resave: false,
     saveUninitialized: false,
     store: MongoStore.create({
