@@ -3,7 +3,6 @@
   "version": "1.0.0",
   "description": "Worker booking platform with MongoDB integration",
   "main": "app.js",
-  "private": true,
   "scripts": {
     "start": "node app.js",
     "dev": "nodemon app.js"
